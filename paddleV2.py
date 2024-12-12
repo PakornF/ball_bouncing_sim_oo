@@ -48,12 +48,18 @@ class Paddle:
     def move_left(self):
         if (self.location[0] - self.width / 2 - 40) >= -turtle.screensize()[0]:
             self.set_location([self.location[0] - 40, self.location[1]])
-            print("Left")
 
     def move_right(self):
         if (self.location[0] + self.width / 2 + 40) <= turtle.screensize()[0]:
             self.set_location([self.location[0] + 40, self.location[1]])
-            print("Right")
+
+    def move_up(self):
+        if (self.location[1] + self.height/2 + 40) <= turtle.screensize()[1]:
+            self.set_location([self.location[0], self.location[1] + 40])
+
+    def move_down(self):
+        if (self.location[1] - self.width / 2 - 40) >= -turtle.screensize()[1]:
+            self.set_location([self.location[0], self.location[1] - 40, ])
 
     def __str__(self):
         return "paddle"

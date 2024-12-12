@@ -23,3 +23,6 @@ class Event:
         if (self.b is not None) and (self.b.count != self.count_b):
             return False
         return True
+
+    def __repr__(self):
+        return f"time : {self.time}, ball_a : {self.a}, ball_b : {self.b}, paddle : {self.paddle}"
