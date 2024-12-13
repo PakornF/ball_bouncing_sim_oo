@@ -25,7 +25,7 @@ class BouncingSimulator:
 
         ball_radius = 0.05 * self.canvas_width
         # self.ball = ball.Ball(ball_radius, 0, 0, 10 * random.randint(-2, 2), 10 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
-        self.ball = ball.Ball(ball_radius, 0, 0, 0, 5, (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, 0, 25, (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
@@ -64,7 +64,7 @@ class BouncingSimulator:
         # self.ball.vx = random.uniform(-2, 2)
         # self.ball.vy = random.uniform(-1, 1)
         self.ball.vx = 0
-        self.ball.vy = 5
+        self.ball.vy = 25
         self.update_score_display()
 
     # updates priority queue with all new events for a_ball
@@ -194,19 +194,11 @@ class BouncingSimulator:
                 self.conclude.write(f"{self.player1_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player1_name)
                 break
+
             if self.score2 == 1:
                 self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player2_name)
                 break
-
-            # if (ball_a is not None) and (ball_b is not None) and (paddle_a is None):
-            #     ball_a.bounce_off(ball_b)
-            #
-            # elif (ball_a is not None) and (ball_b is None) and (paddle_a is None):
-            #     ball_a.bounce_off_vertical_wall()
-            #
-            # elif (ball_a is None) and (ball_b is not None) and (paddle_a is None):
-            #     ball_b.bounce_off_horizontal_wall()
 
             if (ball_a is not None) and (ball_b is not None) and (paddle_a is None):
                 ball_a.bounce_off(ball_b)
@@ -237,4 +229,3 @@ p1_name = input("Please input player1's name")
 p2_name = input("Please input player2's name")
 my_simulator = BouncingSimulator(num_balls, p1_name, p2_name)
 my_simulator.run()
-
