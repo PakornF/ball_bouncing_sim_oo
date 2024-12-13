@@ -157,6 +157,12 @@ class BouncingSimulator:
         df.to_csv(file_path, index=False)
         print(os.getcwd())
 
+    def random_ball(self):
+        self.ball.vx = random.uniform(-20.0, 20.0)
+        self.ball.vy = random.uniform(-20.0, 20.0)
+        self.ball.x = random.uniform(-0.75 * self.canvas_width, 0.75 * self.canvas_width)
+        self.ball.y = random.uniform(-0.9 * self.canvas_height, 0.9 * self.canvas_height)
+
     def run(self):
         # initialize pq with collision events and redraw event
         self.__predict(self.ball)
@@ -172,6 +178,7 @@ class BouncingSimulator:
         self.screen.onkeypress(self.my_paddle2.move_down_player2,"s")
         self.screen.onkeypress(self.my_paddle2.move_left, "a")
         self.screen.onkeypress(self.my_paddle2.move_right, "d")
+        self.screen.onkeypress(self.random_ball, "space")
         print(self.pq)
 
         while (True):
