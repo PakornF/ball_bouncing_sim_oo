@@ -5,6 +5,7 @@ import random
 import heapq
 import paddleV2
 import pandas as pd
+import timer
 
 class BouncingSimulator:
     def __init__(self, num_balls, player1_name, player2_name):
@@ -43,10 +44,61 @@ class BouncingSimulator:
         self.score_display.goto(0, self.canvas_height // 2 + 75)
         self.update_score_display()
 
+        self.clock = timer.Clock(self.screen)
+
+        self.stats_button = turtle.Turtle()
+        self.stats_button.penup()
+        self.stats_button.shape("square")
+        self.stats_button.color(204, 229, 255)
+        self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
+        self.stats_button.shapesize(stretch_wid=2, stretch_len=5)
+
+        # self.stats_button.fillcolor("blue")
+        # self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
+        # self.stats_button.setheading(0)  # Make sure the button is horizontal
+        # self.stats_button.begin_fill()
+        # for _ in range(2):
+        #     self.stats_button.forward(20)  # Length of the button
+        #     self.stats_button.left(90)
+        #     self.stats_button.forward(20)  # Height of the button
+        #     self.stats_button.left(90)
+        # self.stats_button.end_fill()
+        #
+        # # Write text on top of the button
+        # self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
+        # self.stats_button.color("white")
+        # self.stats_button.pendown()
+        # self.stats_button.write("Show Stats", align="center", font=("Arial", 12, "normal"))
+        #
+        self.stats_button.onclick(self.clear_and_show_stats)
+
     def update_score_display(self):
         self.score_display.clear()
         self.score_display.write(f"{self.player1_name}: {self.score1}  {self.player2_name}: {self.score2}", align="center",
                                  font=("Arial", 24, "normal"))
+
+    def clear_and_show_stats(self, x, y):
+        self.screen.clear()
+
+        file_path = "data/Air_Hockey.csv"
+        try:
+            df = pd.read_csv(file_path)
+            turtle.penup()
+            turtle.goto(0, 0)
+            turtle.write("Game Stats", align="center", font=("Arial", 18, "normal"))
+
+            y_offset = -30
+            for index, row in df.iterrows():
+                winner = row["Winner"]
+                duration = row["Duration"]
+                turtle.goto(0, y_offset)
+                turtle.write(f"Winner: {winner} - Duration: {duration}", align="center", font=("Arial", 12, "normal"))
+                y_offset -= 30
+        except FileNotFoundError:
+            turtle.goto(0, 0)
+            turtle.write("No stats available yet", align="center", font=("Arial", 18, "normal"))
+            turtle.hideturtle()
+        turtle.done()
 
     def check_goal(self):
         if self.ball.y - self.ball.size == -self.canvas_height:
@@ -146,22 +198,51 @@ class BouncingSimulator:
 
         file_path = os.path.join(folder, 'Air_Hockey.csv')
 
+        elapsed_time = self.clock.get_elapsed_time()
+        minutes = int(elapsed_time // 60)
+        seconds = int(elapsed_time % 60)
+        duration_str = f"{minutes:02}:{seconds:02}"
+
         # Check if the file exists; if not, create it and write the header
         try:
             df = pd.read_csv(file_path)
         except FileNotFoundError:
-            df = pd.DataFrame(columns=["Winner"])
+            df = pd.DataFrame(columns=["Winner", "Duration"])
 
         # Append the winner's name to the dataframe
-        df = df._append({"Winner": winner_name}, ignore_index=True)
+        df = df._append({"Winner": winner_name, "Duration": duration_str}, ignore_index=True)
         df.to_csv(file_path, index=False)
         print(os.getcwd())
 
     def random_ball(self):
-        self.ball.vx = random.uniform(-20.0, 20.0)
-        self.ball.vy = random.uniform(-20.0, 20.0)
-        self.ball.x = random.uniform(-0.75 * self.canvas_width, 0.75 * self.canvas_width)
-        self.ball.y = random.uniform(-0.9 * self.canvas_height, 0.9 * self.canvas_height)
+        # rand_x = random.uniform(0, 5)
+        # rand_y = random.uniform(0, 5)
+        # if self.ball.vx < 0:
+        #     if self.ball.vx - rand_x >= -20:
+        #         self.ball.vx -= rand_x
+        #     else:
+        #         self.ball.vx -= 1
+        # elif self.ball.vx > 0:
+        #     if self.ball.vx + rand_x <= 20:
+        #         self.ball.vx += rand_x
+        #     else:
+        #         self.ball.vx += 1
+        # if self.ball.vy < 0:
+        #     if self.ball.vy - rand_y >= -20:
+        #         self.ball.vy -= rand_y
+        #     else:
+        #         self.ball.vy -= 1
+        # elif self.ball.vy > 0:
+        #     if self.ball.vy + rand_y <= 20:
+        #         self.ball.vy += rand_y
+        #     else:
+        #         self.ball.vy += 1
+
+        self.ball.vx += random.uniform(-20.0, 20.0)
+        self.ball.vy += random.uniform(-20.0, 20.0)
+
+        # self.ball.x = random.uniform(-0.75 * self.canvas_width, 0.75 * self.canvas_width)
+        # self.ball.y = random.uniform(-0.9 * self.canvas_height, 0.9 * self.canvas_height)
 
     def run(self):
         # initialize pq with collision events and redraw event
@@ -194,17 +275,21 @@ class BouncingSimulator:
             self.ball.move(e.time - self.t)
             self.t = e.time
 
+            self.clock.display_time()
+
             self.check_goal()
             self.conclude = turtle.Turtle()
             self.conclude.goto(0,0)
-            if self.score1 == 2:
+            if self.score1 == 5:
                 self.conclude.write(f"{self.player1_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player1_name)
+                self.clock.display_time()
                 break
 
-            if self.score2 == 2:
+            if self.score2 == 5:
                 self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player2_name)
+                self.clock.display_time()
                 break
 
             if (ball_a is not None) and (ball_b is not None) and (paddle_a is None):
