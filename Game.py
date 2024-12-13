@@ -21,7 +21,8 @@ class BouncingSimulator:
         print(self.canvas_width, self.canvas_height)
 
         ball_radius = 0.05 * self.canvas_width
-        self.ball = ball.Ball(ball_radius, 0, 0, 10 * random.uniform(-1.0, 1.0), 10 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
+        # self.ball = ball.Ball(ball_radius, 0, 0, 10 * random.randint(-2, 2), 10 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, 0, 5, (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
@@ -43,6 +44,25 @@ class BouncingSimulator:
         self.score_display.clear()
         self.score_display.write(f"Player 1: {self.score1}  Player 2: {self.score2}", align="center",
                                  font=("Arial", 24, "normal"))
+
+    def check_goal(self):
+        if self.ball.y - self.ball.size == -self.canvas_height:
+            if -0.75 * self.canvas_width <= self.ball.x - self.ball.size or self.ball.x + self.ball.size <= 0.75 * self.canvas_width:
+                self.score1 += 1
+                self.reset_ball()
+        elif self.ball.y + self.ball.size == self.canvas_height:
+            if -0.75 * self.canvas_width <= self.ball.x - self.ball.size or self.ball.x + self.ball.size <= 0.75 * self.canvas_width:
+                self.score2 += 1
+                self.reset_ball()
+
+    def reset_ball(self):
+        self.ball.x = 0
+        self.ball.y = 0
+        # self.ball.vx = random.uniform(-2, 2)
+        # self.ball.vy = random.uniform(-1, 1)
+        self.ball.vx = 0
+        self.ball.vy = 5
+        self.update_score_display()
 
     # updates priority queue with all new events for a_ball
     def __predict(self, a_ball):
@@ -142,6 +162,16 @@ class BouncingSimulator:
             self.ball.move(e.time - self.t)
             self.t = e.time
 
+            self.check_goal()
+            self.conclude = turtle.Turtle()
+            self.conclude.goto(0,0)
+            if self.score1 == 1:
+                self.conclude.write(f"Player1 Win", align="Center", font=("Ariel", 40, "normal"))
+                break
+            if self.score2 == 7:
+                self.conclude.write(f"Player2 Win", align="Center", font=("Ariel", 40, "normal"))
+                break
+
             # if (ball_a is not None) and (ball_b is not None) and (paddle_a is None):
             #     ball_a.bounce_off(ball_b)
             #
@@ -168,6 +198,7 @@ class BouncingSimulator:
             # regularly update the prediction for the paddle as its position may always be changing due to keyboard events
             self.__paddle_predict()
             # heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ, None, None, None))
+        # self.score_display.write(f"")
 
         # hold the window; close it by clicking the window close 'x' mark
         turtle.done()
