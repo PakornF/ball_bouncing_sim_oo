@@ -4,10 +4,13 @@ import turtle
 import random
 import heapq
 import paddleV2
+import pandas as pd
 
 class BouncingSimulator:
-    def __init__(self, num_balls):
+    def __init__(self, num_balls, player1_name, player2_name):
         self.num_balls = num_balls
+        self.player1_name = player1_name
+        self.player2_name = player2_name
         self.ball_list = []
         self.t = 0.0
         self.pq = []
@@ -42,7 +45,7 @@ class BouncingSimulator:
 
     def update_score_display(self):
         self.score_display.clear()
-        self.score_display.write(f"Player 1: {self.score1}  Player 2: {self.score2}", align="center",
+        self.score_display.write(f"{self.player1_name}: {self.score1}  {self.player2_name}: {self.score2}", align="center",
                                  font=("Arial", 24, "normal"))
 
     def check_goal(self):
@@ -132,6 +135,28 @@ class BouncingSimulator:
             heapq.heappush(self.pq, my_event.Event(self.t + dtP1, a_ball, None, self.my_paddle))
             heapq.heappush(self.pq, my_event.Event(self.t + dtP2, a_ball, None, self.my_paddle2))
 
+    def store_winner(self, winner_name):
+        # Specify the folder where you want to save the CSV (e.g., "data" folder)
+        folder = "data"
+
+        # Ensure the folder exists
+        import os
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        file_path = os.path.join(folder, 'Air_Hockey.csv')
+
+        # Check if the file exists; if not, create it and write the header
+        try:
+            df = pd.read_csv(file_path)
+        except FileNotFoundError:
+            df = pd.DataFrame(columns=["Winner"])
+
+        # Append the winner's name to the dataframe
+        df = df._append({"Winner": winner_name}, ignore_index=True)
+        df.to_csv(file_path, index=False)
+        print(os.getcwd())
+
     def run(self):
         # initialize pq with collision events and redraw event
         self.__predict(self.ball)
@@ -139,14 +164,14 @@ class BouncingSimulator:
 
         # listen to keyboard events and activate move_left and move_right handlers accordingly
         self.screen.listen()
-        self.screen.onkey(self.my_paddle.move_up, "Up")
-        self.screen.onkey(self.my_paddle.move_down, "Down")
-        self.screen.onkey(self.my_paddle.move_right, "Right")
-        self.screen.onkey(self.my_paddle.move_left, "Left")
-        self.screen.onkey(self.my_paddle2.move_up, "w")
-        self.screen.onkey(self.my_paddle2.move_down,"s")
-        self.screen.onkey(self.my_paddle2.move_left, "a")
-        self.screen.onkey(self.my_paddle2.move_right, "d")
+        self.screen.onkeypress(self.my_paddle.move_up_player1, "Up")
+        self.screen.onkeypress(self.my_paddle.move_down_player1, "Down")
+        self.screen.onkeypress(self.my_paddle.move_right, "Right")
+        self.screen.onkeypress(self.my_paddle.move_left, "Left")
+        self.screen.onkeypress(self.my_paddle2.move_up_player2, "w")
+        self.screen.onkeypress(self.my_paddle2.move_down_player2,"s")
+        self.screen.onkeypress(self.my_paddle2.move_left, "a")
+        self.screen.onkeypress(self.my_paddle2.move_right, "d")
         print(self.pq)
 
         while (True):
@@ -166,10 +191,12 @@ class BouncingSimulator:
             self.conclude = turtle.Turtle()
             self.conclude.goto(0,0)
             if self.score1 == 1:
-                self.conclude.write(f"Player1 Win", align="Center", font=("Ariel", 40, "normal"))
+                self.conclude.write(f"{self.player1_name} Win", align="Center", font=("Ariel", 40, "normal"))
+                self.store_winner(self.player1_name)
                 break
-            if self.score2 == 7:
-                self.conclude.write(f"Player2 Win", align="Center", font=("Ariel", 40, "normal"))
+            if self.score2 == 1:
+                self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
+                self.store_winner(self.player2_name)
                 break
 
             # if (ball_a is not None) and (ball_b is not None) and (paddle_a is None):
@@ -206,6 +233,8 @@ class BouncingSimulator:
 
 # num_balls = int(input("Number of balls to simulate: "))
 num_balls = 1
-my_simulator = BouncingSimulator(num_balls)
+p1_name = input("Please input player1's name")
+p2_name = input("Please input player2's name")
+my_simulator = BouncingSimulator(num_balls, p1_name, p2_name)
 my_simulator.run()
 

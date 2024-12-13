@@ -53,12 +53,20 @@ class Paddle:
         if (self.location[0] + self.width / 2 + 20) <= 0.9 * turtle.screensize()[0]:
             self.set_location([self.location[0] + 20, self.location[1]])
 
-    def move_up(self):
+    def move_up_player1(self):
+        if (self.location[1] + self.height/2 + 20) <= 0:
+            self.set_location([self.location[0], self.location[1] + 20])
+
+    def move_up_player2(self):
         if (self.location[1] + self.height/2 + 20) <= 0.75 * turtle.screensize()[1]:
             self.set_location([self.location[0], self.location[1] + 20])
 
-    def move_down(self):
+    def move_down_player1(self):
         if (self.location[1] - self.height / 2 - 20) >= -0.75 * turtle.screensize()[1]:
+            self.set_location([self.location[0], self.location[1] - 20, ])
+
+    def move_down_player2(self):
+        if (self.location[1] - self.height / 2 - 20) >= 0:
             self.set_location([self.location[0], self.location[1] - 20, ])
 
     def __str__(self):
