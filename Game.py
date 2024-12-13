@@ -25,7 +25,7 @@ class BouncingSimulator:
 
         ball_radius = 0.05 * self.canvas_width
         # self.ball = ball.Ball(ball_radius, 0, 0, 10 * random.randint(-2, 2), 10 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
-        self.ball = ball.Ball(ball_radius, 0, 0, 0, 25, (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, 0, 20, (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
