@@ -21,13 +21,13 @@ class BouncingSimulator:
         print(self.canvas_width, self.canvas_height)
 
         ball_radius = 0.05 * self.canvas_width
-        self.ball = ball.Ball(ball_radius, 0, 0, 5 * random.uniform(-1.0, 1.0), 5 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, 10 * random.uniform(-1.0, 1.0), 10 * random.uniform(-1.0, 1.0), (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
-        self.my_paddle = paddleV2.Paddle(20, 150, (255, 0, 0), tom)
+        self.my_paddle = paddleV2.Paddle(150, 7.5, (255, 0, 0), tom)
         self.my_paddle.set_location([0, -100])
-        self.my_paddle2 = paddleV2.Paddle(20, 150, (0, 255, 0), tom)
+        self.my_paddle2 = paddleV2.Paddle(150, 7.5, (0, 255, 0), tom)
         self.my_paddle2.set_location([0, 100])
 
         self.screen = turtle.Screen()
@@ -50,8 +50,8 @@ class BouncingSimulator:
             return
 
         # particle-particle collisions
-        dt = a_ball.time_to_hit(self.ball)
-        heapq.heappush(self.pq, my_event.Event(self.t + dt, a_ball, self.ball, None))
+        # dt = a_ball.time_to_hit(self.ball)
+        # heapq.heappush(self.pq, my_event.Event(self.t + dt, a_ball, self.ball, None)) #No particle-particle
 
         # particle-wall collisions
         dtX = a_ball.time_to_hit_vertical_wall()
@@ -66,31 +66,51 @@ class BouncingSimulator:
         turtle.pendown()
         turtle.color((0, 0, 0))
         for i in range(2):
-            turtle.forward(1.8 * self.canvas_width)
-            turtle.left(90)
-            turtle.forward(self.canvas_height * 13 / 15)
+            turtle.forward(0.75 * self.canvas_width)
             turtle.penup()
-            turtle.forward(self.canvas_height * 4 / 15)
+            turtle.forward(0.3 * self.canvas_width)
             turtle.pendown()
-            turtle.forward(self.canvas_height * 13 / 15)
+            turtle.forward(0.75 * self.canvas_width)
             turtle.left(90)
+            turtle.forward(2 * self.canvas_height)
+            turtle.left(90)
+        turtle.penup()
+        turtle.color((150, 0, 0))
+        turtle.pensize(5)
+        turtle.goto(-0.9 * self.canvas_width, -0.75 * self.canvas_height)
+        turtle.pendown()
+        turtle.forward(1.8 * self.canvas_width)
+        turtle.penup()
+        turtle.goto(-0.9 * self.canvas_width, 0.75 * self.canvas_height)
+        turtle.pendown()
+        turtle.forward(1.8 * self.canvas_width)
+        turtle.penup()
+        turtle.color((0, 255, 255))
+        turtle.pensize(5)
+        turtle.goto(-0.9 * self.canvas_width,0)
+        turtle.pendown()
+        turtle.forward(1.8 * self.canvas_width)
 
     def __redraw(self):
         turtle.clear()
         self.my_paddle.clear()
+        self.my_paddle2.clear()
         self.__draw_border()
         self.my_paddle.draw()
         self.my_paddle2.draw()
-        for i in range(len(self.ball_list)):
-            self.ball_list[i].draw()
+        # for i in range(len(self.ball_list)):
+        #     self.ball_list[i].draw()
+        self.ball.draw()
         turtle.update()
         heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ, None, None, None))
 
     def __paddle_predict(self):
         for i in range(len(self.ball_list)):
             a_ball = self.ball_list[i]
-            dtP = a_ball.time_to_hit_paddle(self.my_paddle)
-            heapq.heappush(self.pq, my_event.Event(self.t + dtP, a_ball, None, self.my_paddle))
+            dtP1 = a_ball.time_to_hit_paddle(self.my_paddle)
+            dtP2 = a_ball.time_to_hit_paddle(self.my_paddle2)
+            heapq.heappush(self.pq, my_event.Event(self.t + dtP1, a_ball, None, self.my_paddle))
+            heapq.heappush(self.pq, my_event.Event(self.t + dtP2, a_ball, None, self.my_paddle2))
 
     def run(self):
         # initialize pq with collision events and redraw event
@@ -107,6 +127,7 @@ class BouncingSimulator:
         self.screen.onkey(self.my_paddle2.move_down,"s")
         self.screen.onkey(self.my_paddle2.move_left, "a")
         self.screen.onkey(self.my_paddle2.move_right, "d")
+        print(self.pq)
 
         while (True):
             e = heapq.heappop(self.pq)

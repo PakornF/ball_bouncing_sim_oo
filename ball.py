@@ -103,9 +103,9 @@ class Ball:
 
     def time_to_hit_vertical_wall(self):
         if self.vx > 0:
-            return (self.canvas_width - self.x - self.size) / self.vx
+            return (0.9*self.canvas_width - self.x - self.size) / self.vx
         elif self.vx < 0:
-            return (self.canvas_width + self.x - self.size) / (-self.vx)
+            return (0.9*self.canvas_width + self.x - self.size) / (-self.vx)
         else:
             return math.inf
 
