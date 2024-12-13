@@ -64,7 +64,7 @@ class BouncingSimulator:
         # self.ball.vx = random.uniform(-2, 2)
         # self.ball.vy = random.uniform(-1, 1)
         self.ball.vx = 0
-        self.ball.vy = 25
+        self.ball.vy = 20
         self.update_score_display()
 
     # updates priority queue with all new events for a_ball
@@ -190,12 +190,12 @@ class BouncingSimulator:
             self.check_goal()
             self.conclude = turtle.Turtle()
             self.conclude.goto(0,0)
-            if self.score1 == 1:
+            if self.score1 == 2:
                 self.conclude.write(f"{self.player1_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player1_name)
                 break
 
-            if self.score2 == 1:
+            if self.score2 == 2:
                 self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player2_name)
                 break
