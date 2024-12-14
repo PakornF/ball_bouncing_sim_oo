@@ -15,7 +15,7 @@ class BouncingSimulator:
         self.ball_list = []
         self.t = 0.0
         self.pq = []
-        self.HZ = 30
+        self.HZ = 15
         turtle.speed(0)
         turtle.tracer(0)
         turtle.hideturtle()
@@ -26,7 +26,7 @@ class BouncingSimulator:
 
         ball_radius = 0.05 * self.canvas_width
         # self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(10, 15), random.uniform(10,15), (255, 0, 255), 0)
-        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(15, 20), random.uniform(15, 20), (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(25, 30), random.uniform(25, 30), (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
@@ -132,10 +132,8 @@ class BouncingSimulator:
     def reset_ball(self):
         self.ball.x = 0
         self.ball.y = 0
-        # self.ball.vx = random.uniform(-2, 2)
-        # self.ball.vy = random.uniform(-1, 1)
-        self.ball.vx = random.uniform(15, 20)  # or your desired velocity
-        self.ball.vy = random.uniform(15, 20)  # or your desired velocity
+        self.ball.vx = random.uniform(25, 30)  # or your desired velocity
+        self.ball.vy = random.uniform(25, 30)  # or your desired velocity
         self.update_score_display()
 
     def __draw_border(self):
