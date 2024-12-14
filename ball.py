@@ -136,5 +136,4 @@ class Ball:
         self.count += 1
 
     def __str__(self):
-        return str(self.x) + ":" + str(self.y) + ":" + str(self.vx) + ":" + str(self.vy) + ":" + str(self.count) + str(
-            self.id)
+        return str(self.x) + ":" + str(self.y) + ":" + str(self.vx) + ":" + str(self.vy) + ":" + str(self.count) + str(self.id)

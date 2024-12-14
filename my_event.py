@@ -1,3 +1,4 @@
+'''my_event'''
 class Event:
     def __init__(self, time, ball_a, ball_b, paddle):
         self.time = time
@@ -25,4 +26,4 @@ class Event:
         return True
 
     def __repr__(self):
-        return f"time : {self.time}, ball_a : {self.a}, ball_b : {self.b}, paddle : {self.paddle}"
+        return f"time : {self.time} ball_a : {self.a} ball_b : {self.b} paddle : {self.paddle}"
