@@ -11,7 +11,7 @@ class BouncingSimulator:
         self.ball_list = []
         self.t = 0.0
         self.pq = []
-        self.HZ = 4
+        self.HZ = 20
         turtle.speed(0)
         turtle.tracer(0)
         turtle.hideturtle()

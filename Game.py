@@ -15,7 +15,8 @@ class BouncingSimulator:
         self.ball_list = []
         self.t = 0.0
         self.pq = []
-        self.HZ = 15
+        self.HZ = 4 # was 4
+        turtle.title("Air Hockey")
         turtle.speed(0)
         turtle.tracer(0)
         turtle.hideturtle()
@@ -46,12 +47,12 @@ class BouncingSimulator:
 
         self.clock = timer.Clock(self.screen)
 
-        self.stats_button = turtle.Turtle()
-        self.stats_button.penup()
-        self.stats_button.shape("square")
-        self.stats_button.color(204, 229, 255)
-        self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
-        self.stats_button.shapesize(stretch_wid=2, stretch_len=5)
+        # self.stats_button = turtle.Turtle()
+        # self.stats_button.penup()
+        # self.stats_button.shape("square")
+        # self.stats_button.color(204, 229, 255)
+        # self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
+        # self.stats_button.shapesize(stretch_wid=2, stretch_len=5)
 
         # self.stats_button.fillcolor("blue")
         # self.stats_button.goto(-0.755 * self.canvas_width, 0.095 * self.canvas_height)
@@ -70,16 +71,17 @@ class BouncingSimulator:
         # self.stats_button.pendown()
         # self.stats_button.write("Show Stats", align="center", font=("Arial", 12, "normal"))
         #
-        self.stats_button.onclick(self.clear_and_show_stats)
+        self.screen.listen()
+        self.screen.onkeypress(self.clear_and_show_stats,"Escape")
 
-        turtle.delay(6)
+        # turtle.delay(6)
 
     def update_score_display(self):
         self.score_display.clear()
         self.score_display.write(f"{self.player1_name}: {self.score1}  {self.player2_name}: {self.score2}", align="center",
                                  font=("Arial", 24, "normal"))
 
-    def clear_and_show_stats(self, x, y):
+    def clear_and_show_stats(self):
         self.screen.clear()
 
         file_path = "data/Air_Hockey.csv"
@@ -112,22 +114,7 @@ class BouncingSimulator:
             elif self.ball.y + self.ball.size >= 0.95*self.canvas_height:
                 self.score2 += 1
                 self.reset_ball()
-        # if self.ball.y - self.ball.size <= -self.canvas_height:
-        #     if -0.75 * self.canvas_width <= self.ball.x - self.ball.size or self.ball.x + self.ball.size <= 0.75 * self.canvas_width:
-        #         self.score1 += 1
-        #         self.reset_ball()
-        # elif self.ball.y + self.ball.size >= self.canvas_height:
-        #     if -0.75 * self.canvas_width <= self.ball.x - self.ball.size or self.ball.x + self.ball.size <= 0.75 * self.canvas_width:
-        #         self.score2 += 1
-        #         self.reset_ball()
 
-        # if -0.75 * self.canvas_width <= self.ball.x - self.ball.size or self.ball.x + self.ball.size <= 0.75 * self.canvas_width:
-        #     if self.ball.y - self.ball.size <= -self.canvas_height:
-        #         self.score1 += 1
-        #         self.reset_ball()
-        #     elif self.ball.y + self.ball.size >= self.canvas_height:
-        #         self.score2 += 1
-        #         self.reset_ball()
 
     def reset_ball(self):
         self.ball.x = 0
@@ -182,9 +169,9 @@ class BouncingSimulator:
 
         turtle.update()
 
-        self.__predict(self.ball)
-        self.__paddle_predict()
-        self.__paddle_predict2()
+        # self.__predict(self.ball)
+        # self.__paddle_predict()
+        # self.__paddle_predict2()
         heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ, None, None, None))
 
     def store_winner(self, winner_name):
@@ -246,18 +233,31 @@ class BouncingSimulator:
 
     def __paddle_predict(self):
         dtP1 = self.ball.time_to_hit_paddle(self.my_paddle)
+        # if dtP1 < 1.0:
+        #     heapq.heappush(self.pq, my_event.Event(self.t + dtP1, self.ball, None, self.my_paddle))
         heapq.heappush(self.pq, my_event.Event(self.t + dtP1, self.ball, None, self.my_paddle))
     def __paddle_predict2(self):
         dtP2 = self.ball.time_to_hit_paddle(self.my_paddle2)
+        # if dtP2 < 1.0:
+        #     heapq.heappush(self.pq, my_event.Event(self.t + dtP2, self.ball, None, self.my_paddle2))
         heapq.heappush(self.pq, my_event.Event(self.t + dtP2, self.ball, None, self.my_paddle2))
 
     def __predict(self, a_ball):
         if a_ball is None:
             return
 
+        for i in range(len(self.ball_list)):
+            dt = a_ball.time_to_hit(self.ball_list[i])
+            # insert this event into pq
+            heapq.heappush(self.pq, my_event.Event(self.t + dt, a_ball, self.ball_list[i], None))
+
         # particle-wall collisions
         dtX = a_ball.time_to_hit_vertical_wall()
         dtY = a_ball.time_to_hit_horizontal_wall()
+        # if dtX < 1.0:
+        #     heapq.heappush(self.pq, my_event.Event(self.t + dtX, a_ball, None, None))
+        # if dtY < 1.0:
+        #     heapq.heappush(self.pq, my_event.Event(self.t + dtY, None, a_ball, None))
         heapq.heappush(self.pq, my_event.Event(self.t + dtX, a_ball, None, None))
         heapq.heappush(self.pq, my_event.Event(self.t + dtY, None, a_ball, None))
 
@@ -323,23 +323,20 @@ class BouncingSimulator:
                 self.clock.display_time()
                 break
 
-            if self.score2 == 5:
+            elif self.score2 == 5:
                 self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player2_name)
                 self.clock.display_time()
                 break
 
-            # self.pq.clear()
-
             self.__predict(ball_a)
             self.__predict(ball_b)
-
-            # regularly update the prediction for the paddle as its position may always be changing due to keyboard events
+            #  regularly update the prediction for the paddle as its position may always be changing due to keyboard events
             self.__paddle_predict()
             self.__paddle_predict2()
+
             # heapq.heappush(self.pq, my_event.Event(0, None, None, None))
-            heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ+10000, None, None, None))
-        # self.score_display.write(f"")
+            # heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ+10000, None, None, None))
 
         # hold the window; close it by clicking the window close 'x' mark
         turtle.done()
