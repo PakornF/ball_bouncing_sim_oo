@@ -1,5 +1,6 @@
-'''my_event'''
+"""Event"""
 class Event:
+    """Class representing event"""
     def __init__(self, time, ball_a, ball_b, paddle):
         self.time = time
         self.a = ball_a
@@ -19,6 +20,7 @@ class Event:
         return self.time < that.time
 
     def is_valid(self):
+        """check valid event"""
         if (self.a is not None) and (self.a.count != self.count_a):
             return False
         if (self.b is not None) and (self.b.count != self.count_b):
@@ -26,4 +28,5 @@ class Event:
         return True
 
     def __repr__(self):
+        """representation string"""
         return f"time : {self.time} ball_a : {self.a} ball_b : {self.b} paddle : {self.paddle}"

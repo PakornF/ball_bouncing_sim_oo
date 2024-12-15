@@ -1,13 +1,15 @@
-import ball
-import my_event
+"""Game simulator"""
 import turtle
 import random
 import heapq
-import paddleV2
 import pandas as pd
+import paddlev2
+import ball
+import my_event
 import timer
 
 class BouncingSimulator:
+    """game simulator"""
     def __init__(self, num_balls, player1_name, player2_name):
         self.num_balls = num_balls
         self.player1_name = player1_name
@@ -15,7 +17,7 @@ class BouncingSimulator:
         self.ball_list = []
         self.t = 0.0
         self.pq = []
-        self.HZ = 4 # was 4
+        self.hz = 4 # was 4
         turtle.title("Air Hockey")
         turtle.speed(0)
         turtle.tracer(0)
@@ -26,14 +28,14 @@ class BouncingSimulator:
         print(self.canvas_width, self.canvas_height)
 
         ball_radius = 0.05 * self.canvas_width
-        # self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(10, 15), random.uniform(10,15), (255, 0, 255), 0)
-        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(25, 30), random.uniform(25, 30), (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(10,20),
+                              random.uniform(10, 20), (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
-        self.my_paddle = paddleV2.Paddle(150, 7.5, (255, 0, 0), tom)
+        self.my_paddle = paddlev2.Paddle(150, 7.5, (255, 0, 0), tom)
         self.my_paddle.set_location([0, -100])
-        self.my_paddle2 = paddleV2.Paddle(150, 7.5, (0, 255, 0), tom)
+        self.my_paddle2 = paddlev2.Paddle(150, 7.5, (0, 255, 0), tom)
         self.my_paddle2.set_location([0, 100])
 
         self.screen = turtle.Screen()
@@ -46,6 +48,7 @@ class BouncingSimulator:
         self.update_score_display()
 
         self.clock = timer.Clock(self.screen)
+        self.conclude = turtle.Turtle()
 
         # self.stats_button = turtle.Turtle()
         # self.stats_button.penup()
@@ -76,11 +79,14 @@ class BouncingSimulator:
         # turtle.delay(6)
 
     def update_score_display(self):
+        """update score display"""
         self.score_display.clear()
-        self.score_display.write(f"{self.player1_name}: {self.score1}  {self.player2_name}: {self.score2}", align="center",
-                                 font=("Arial", 24, "normal"))
+        self.score_display.write(f"{self.player1_name}: {self.score1}  "
+                                 f"{self.player2_name}: {self.score2}",
+                                 align="center", font=("Arial", 24, "normal"))
 
     def clear_and_show_stats(self):
+        """clear and show stat"""
         self.screen.clear()
 
         file_path = "data/Air_Hockey.csv"
@@ -95,7 +101,8 @@ class BouncingSimulator:
                 winner = row["Winner"]
                 duration = row["Duration"]
                 turtle.goto(0, y_offset)
-                turtle.write(f"Winner: {winner} - Duration: {duration}", align="center", font=("Arial", 12, "normal"))
+                turtle.write(f"Winner: {winner} - Duration: {duration}",
+                             align="center", font=("Arial", 12, "normal"))
                 y_offset -= 30
         except FileNotFoundError:
             turtle.goto(0, 0)
@@ -105,6 +112,7 @@ class BouncingSimulator:
         turtle.done()
 
     def clear_csv(self):
+        """clear csv"""
         """Clear the data in the specified CSV file by overwriting it with an empty DataFrame."""
         file_path = "data/Air_Hockey.csv"
         try:
@@ -125,6 +133,7 @@ class BouncingSimulator:
             print(f"An error occurred while clearing the CSV file: {e}")
 
     def check_goal(self):
+        """check goal"""
         if -0.15 * self.canvas_width <= self.ball.x <= 0.15 * self.canvas_width:
             # Check if the ball is below the lower goal line (for player 1 scoring)
             if self.ball.y - self.ball.size <= -0.95*self.canvas_height:
@@ -137,13 +146,15 @@ class BouncingSimulator:
 
 
     def reset_ball(self):
+        """reset ball"""
         self.ball.x = 0
         self.ball.y = 0
-        self.ball.vx = random.uniform(25, 30)  # or your desired velocity
-        self.ball.vy = random.uniform(25, 30)  # or your desired velocity
+        self.ball.vx = random.uniform(10, 20)  # or your desired velocity
+        self.ball.vy = random.uniform(10, 20)  # or your desired velocity
         self.update_score_display()
 
     def __draw_border(self):
+        """draw border"""
         turtle.penup()
         turtle.goto(-0.9 * self.canvas_width, -self.canvas_height)
         turtle.pensize(10)
@@ -176,7 +187,7 @@ class BouncingSimulator:
         turtle.forward(1.8 * self.canvas_width)
 
     def __redraw(self):
-
+        """redraw"""
         turtle.clear()
         self.my_paddle.clear()
         self.my_paddle2.clear()
@@ -192,9 +203,10 @@ class BouncingSimulator:
         # self.__predict(self.ball)
         # self.__paddle_predict()
         # self.__paddle_predict2()
-        heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ, None, None, None))
+        heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.hz, None, None, None))
 
     def store_winner(self, winner_name):
+        """store winner"""
         # Specify the folder where you want to save the CSV (e.g., "data" folder)
         # folder = "data"
         #
@@ -222,6 +234,7 @@ class BouncingSimulator:
         df.to_csv(file_path, index=False)
 
     def random_ball(self):
+        """random ball"""
         if self.ball.vx > 0:
             self.ball.vx += random.uniform(10,15)
         elif self.ball.vx < 0:
@@ -235,53 +248,60 @@ class BouncingSimulator:
         # self.ball.y = random.uniform(-0.9 * self.canvas_height, 0.9 * self.canvas_height)
 
     def move_right_track_1(self):
+        """move right"""
         self.my_paddle.move_right()
         self.__paddle_predict()
         self.__paddle_predict2()
     def move_left_track_1(self):
+        """move left"""
         self.my_paddle.move_left()
         self.__paddle_predict()
         self.__paddle_predict2()
     def move_up_track_1(self):
+        """move up"""
         self.my_paddle.move_up_player1()
         self.__paddle_predict()
         self.__paddle_predict2()
     def move_down_track_1(self):
+        """move down"""
         self.my_paddle.move_down_player1()
         self.__paddle_predict()
         self.__paddle_predict2()
 
     def __paddle_predict(self):
-        dtP1 = self.ball.time_to_hit_paddle(self.my_paddle)
-        # if dtP1 < 1.0:
-        #     heapq.heappush(self.pq, my_event.Event(self.t + dtP1, self.ball, None, self.my_paddle))
-        heapq.heappush(self.pq, my_event.Event(self.t + dtP1, self.ball, None, self.my_paddle))
+        """paddle predict"""
+        dtp1 = self.ball.time_to_hit_paddle(self.my_paddle)
+        heapq.heappush(self.pq,
+                       my_event.Event(self.t + dtp1, self.ball, None, self.my_paddle))
     def __paddle_predict2(self):
-        dtP2 = self.ball.time_to_hit_paddle(self.my_paddle2)
-        # if dtP2 < 1.0:
-        #     heapq.heappush(self.pq, my_event.Event(self.t + dtP2, self.ball, None, self.my_paddle2))
-        heapq.heappush(self.pq, my_event.Event(self.t + dtP2, self.ball, None, self.my_paddle2))
+        """paddle predict"""
+        dtp2 = self.ball.time_to_hit_paddle(self.my_paddle2)
+        heapq.heappush(self.pq,
+                       my_event.Event(self.t + dtp2, self.ball, None, self.my_paddle2))
 
     def __predict(self, a_ball):
+        """predict"""
         if a_ball is None:
             return
 
         for i in range(len(self.ball_list)):
             dt = a_ball.time_to_hit(self.ball_list[i])
             # insert this event into pq
-            heapq.heappush(self.pq, my_event.Event(self.t + dt, a_ball, self.ball_list[i], None))
+            heapq.heappush(self.pq,
+                           my_event.Event(self.t + dt, a_ball, self.ball_list[i], None))
 
         # particle-wall collisions
-        dtX = a_ball.time_to_hit_vertical_wall()
-        dtY = a_ball.time_to_hit_horizontal_wall()
+        dtx = a_ball.time_to_hit_vertical_wall()
+        dty = a_ball.time_to_hit_horizontal_wall()
         # if dtX < 1.0:
         #     heapq.heappush(self.pq, my_event.Event(self.t + dtX, a_ball, None, None))
         # if dtY < 1.0:
         #     heapq.heappush(self.pq, my_event.Event(self.t + dtY, None, a_ball, None))
-        heapq.heappush(self.pq, my_event.Event(self.t + dtX, a_ball, None, None))
-        heapq.heappush(self.pq, my_event.Event(self.t + dtY, None, a_ball, None))
+        heapq.heappush(self.pq, my_event.Event(self.t + dtx, a_ball, None, None))
+        heapq.heappush(self.pq, my_event.Event(self.t + dty, None, a_ball, None))
 
     def run(self):
+        """run"""
         # initialize pq with collision events and redraw event
         self.__predict(self.ball)
         # self.__paddle_predict()
@@ -307,7 +327,7 @@ class BouncingSimulator:
 
         print(self.pq)
 
-        while (True):
+        while True:
             e = heapq.heappop(self.pq)
             # print(e)
             if not e.is_valid():
@@ -336,36 +356,32 @@ class BouncingSimulator:
 
             self.check_goal()
 
-            self.conclude = turtle.Turtle()
+            # self.conclude = turtle.Turtle()
             self.conclude.goto(0,0)
             if self.score1 == 5:
-                self.conclude.write(f"{self.player1_name} Win", align="Center", font=("Ariel", 40, "normal"))
+                self.conclude.write(f"{self.player1_name} Win",
+                                    align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player1_name)
                 self.clock.display_time()
                 break
 
-            elif self.score2 == 5:
-                self.conclude.write(f"{self.player2_name} Win", align="Center", font=("Ariel", 40, "normal"))
+            if self.score2 == 5:
+                self.conclude.write(f"{self.player2_name} "
+                                    f"Win", align="Center", font=("Ariel", 40, "normal"))
                 self.store_winner(self.player2_name)
                 self.clock.display_time()
                 break
 
             self.__predict(ball_a)
             self.__predict(ball_b)
-            #  regularly update the prediction for the paddle as its position may always be changing due to keyboard events
             self.__paddle_predict()
             self.__paddle_predict2()
-
-            # heapq.heappush(self.pq, my_event.Event(0, None, None, None))
-            # heapq.heappush(self.pq, my_event.Event(self.t + 1.0 / self.HZ+10000, None, None, None))
 
         # hold the window; close it by clicking the window close 'x' mark
         turtle.done()
 
-
-# num_balls = int(input("Number of balls to simulate: "))
-num_balls = 1
+num_of_balls = 1
 p1_name = input("Please input player1's name")
 p2_name = input("Please input player2's name")
-my_simulator = BouncingSimulator(num_balls, p1_name, p2_name)
+my_simulator = BouncingSimulator(num_of_balls, p1_name, p2_name)
 my_simulator.run()
