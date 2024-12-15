@@ -196,14 +196,15 @@ class BouncingSimulator:
 
     def store_winner(self, winner_name):
         # Specify the folder where you want to save the CSV (e.g., "data" folder)
-        folder = "data"
+        # folder = "data"
+        #
+        # # Ensure the folder exists
+        # import os
+        # if not os.path.exists(folder):
+        #     os.makedirs(folder)
 
-        # Ensure the folder exists
-        import os
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-
-        file_path = os.path.join(folder, 'Air_Hockey.csv')
+        # file_path = os.path.join(folder, 'Air_Hockey.csv')
+        file_path = "data/Air_Hockey.csv"
 
         elapsed_time = self.clock.get_elapsed_time()
         minutes = int(elapsed_time // 60)
@@ -219,7 +220,6 @@ class BouncingSimulator:
         # Append the winner's name to the dataframe
         df = df._append({"Winner": winner_name, "Duration": duration_str}, ignore_index=True)
         df.to_csv(file_path, index=False)
-        print(os.getcwd())
 
     def random_ball(self):
         if self.ball.vx > 0:
