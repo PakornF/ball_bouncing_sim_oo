@@ -1,7 +1,7 @@
 Multiplayer Air Hockey game made by turtle library, a game which can be played by two people on same device. Each player need to control the paddle to deflect a ball, making sure the ball cannot travel into their goal.
 
 To setup and play this game, you need to fork or clone this repository into your device first, then you are good to go, open file name "Game.py" on your desired IDE, then hit run botton.
-It should pop up a display screen for you to play.
+It should pop up a display screen for you to play. Player1 uses arrow key to control paddle, while Player2 uses wasd key to control paddle, escape for stat, then you can press c to clear stat.
 
 I have modified:
 1. ball.py ->
