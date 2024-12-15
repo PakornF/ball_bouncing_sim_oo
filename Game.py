@@ -73,7 +73,6 @@ class BouncingSimulator:
         #
         self.screen.listen()
         self.screen.onkeypress(self.clear_and_show_stats,"Escape")
-
         # turtle.delay(6)
 
     def update_score_display(self):
@@ -102,7 +101,28 @@ class BouncingSimulator:
             turtle.goto(0, 0)
             turtle.write("No stats available yet", align="center", font=("Arial", 18, "normal"))
             turtle.hideturtle()
+        self.screen.onkeypress(self.clear_csv, "c")
         turtle.done()
+
+    def clear_csv(self):
+        """Clear the data in the specified CSV file by overwriting it with an empty DataFrame."""
+        file_path = "data/Air_Hockey.csv"
+        try:
+            # Create an empty dataframe with the same columns
+            df = pd.DataFrame(columns=["Winner", "Duration"])
+
+            # Write the empty dataframe to the file, overwriting any existing data
+            df.to_csv(file_path, index=False)
+            print(f"Data in {file_path} has been cleared.")
+
+            # Notify user that the data was cleared
+            self.screen.clear()
+            turtle.penup()
+            turtle.goto(0, 0)
+            turtle.write("Game Stats Cleared", align="center", font=("Arial", 18, "normal"))
+            turtle.hideturtle()
+        except Exception as e:
+            print(f"An error occurred while clearing the CSV file: {e}")
 
     def check_goal(self):
         if -0.15 * self.canvas_width <= self.ball.x <= 0.15 * self.canvas_width:
@@ -284,6 +304,7 @@ class BouncingSimulator:
         self.screen.onkeypress(self.my_paddle2.move_left, "a")
         self.screen.onkeypress(self.my_paddle2.move_right, "d")
         self.screen.onkeypress(self.random_ball, "space")
+
         print(self.pq)
 
         while (True):
@@ -344,7 +365,7 @@ class BouncingSimulator:
 
 # num_balls = int(input("Number of balls to simulate: "))
 num_balls = 1
-# p1_name = input("Please input player1's name")
-# p2_name = input("Please input player2's name")
-my_simulator = BouncingSimulator(num_balls, 'p1_name', 'p2_name')
+p1_name = input("Please input player1's name")
+p2_name = input("Please input player2's name")
+my_simulator = BouncingSimulator(num_balls, p1_name, p2_name)
 my_simulator.run()

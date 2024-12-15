@@ -118,15 +118,45 @@ class Ball:
             return math.inf
 
     def time_to_hit_paddle(self, paddle):
-        if (self.vy > 0) and ((self.y + self.size) > (paddle.location[1] - paddle.height / 2)):
-            return math.inf
-        if (self.vy < 0) and ((self.y - self.size) < (paddle.location[1] + paddle.height / 2)):
+        # ถ้าบอลไม่ได้เคลื่อนที่ในแนวดิ่ง ก็ไม่มีการชน
+        if self.vy == 0:
             return math.inf
 
-        dt = (math.sqrt((paddle.location[1] - self.y) ** 2) - self.size - paddle.height / 2) / abs(self.vy)
-        paddle_left_edge = paddle.location[0] - paddle.width / 2
-        paddle_right_edge = paddle.location[0] + paddle.width / 2
-        if paddle_left_edge - self.size <= self.x + (self.vx * dt) <= paddle_right_edge + self.size:
+        paddle_top = paddle.location[1] + paddle.height / 2
+        paddle_bottom = paddle.location[1] - paddle.height / 2
+
+        # ถ้าบอลเคลื่อนที่ขึ้น (vy > 0) บอลต้องอยู่ต่ำกว่าพื้นที่ paddle (บน)
+        # เพื่อที่จะวิ่งขึ้นไปหา paddle
+        if self.vy > 0:
+            # ถ้าจุดบนของบอล (y + size) อยู่เหนือ paddle_bottom อยู่แล้ว แปลว่าบอลอยู่เลย paddle ไปหรือไม่ได้จะชน
+            if (self.y + self.size) >= paddle_bottom:
+                return math.inf
+            # คำนวณเวลาถึงแนวระดับล่างของ paddle
+            # ระยะทาง = paddle_bottom - (y + size)
+            dt = (paddle_bottom - (self.y + self.size)) / self.vy
+
+        # ถ้าบอลเคลื่อนลง (vy < 0) บอลต้องอยู่สูงกว่าพื้นที่ paddle (ล่าง)
+        # เพื่อวิ่งลงไปหา paddle
+        else:
+            # ถ้าจุดล่างของบอล (y - size) อยู่ต่ำกว่าพื้นที่ paddle_top แปลว่าบอลอยู่เลย paddle ไปแล้ว
+            if (self.y - self.size) <= paddle_top:
+                return math.inf
+            # คำนวณเวลาถึงแนวระดับบนของ paddle
+            # ระยะทาง = (y - size) - paddle_top
+            # เนื่องจาก vy < 0 เราจะเอาค่าเป็นบวกโดยหารด้วย -vy
+            dt = ((self.y - self.size) - paddle_top) / (-self.vy)
+
+        # ถ้าเวลาที่คำนวณได้ไม่สมเหตุสมผล (น้อยกว่าหรือเท่ากับ 0) แสดงว่าการชนไม่เกิดในอนาคต
+        if dt <= 0:
+            return math.inf
+
+        # ตรวจสอบตำแหน่งแนวนอน ณ เวลานั้น
+        x_future = self.x + self.vx * dt
+        paddle_left = paddle.location[0] - paddle.width / 2
+        paddle_right = paddle.location[0] + paddle.width / 2
+
+        # ถ้าตำแหน่งในอนาคตของบอล (รวมรัศมีบอล) อยู่ในแนว paddle ก็ชน
+        if (x_future + self.size >= paddle_left) and (x_future - self.size <= paddle_right):
             return dt
         else:
             return math.inf
