@@ -235,14 +235,18 @@ class BouncingSimulator:
 
     def random_ball(self):
         """random ball"""
-        if self.ball.vx > 0:
-            self.ball.vx += random.uniform(10,15)
-        elif self.ball.vx < 0:
-            self.ball.vx -= random.uniform(-10, -15)
-        if self.ball.vy > 0:
-            self.ball.vy += random.uniform(10,15)
-        elif self.ball.vy < 0:
-            self.ball.vy -= random.uniform(-10, -15)
+        if self.ball.vx > 0 and self.ball.vy > 0:
+            self.ball.vx = 15
+            self.ball.vy = 15
+        elif self.ball.vx < 0 and self.ball.vy > 0:
+            self.ball.vx = -15
+            self.ball.vy = 15
+        elif self.ball.vx > 0 and self.ball.vy < 0:
+            self.ball.vx = 15
+            self.ball.vy = -15
+        elif self.ball.vx < 0 and self.ball.vy < 0:
+            self.ball.vx = -15
+            self.ball.vy = -15
 
         # self.ball.x = random.uniform(-0.75 * self.canvas_width, 0.75 * self.canvas_width)
         # self.ball.y = random.uniform(-0.9 * self.canvas_height, 0.9 * self.canvas_height)
@@ -323,7 +327,7 @@ class BouncingSimulator:
         self.screen.onkeypress(self.my_paddle2.move_down_player2,"s")
         self.screen.onkeypress(self.my_paddle2.move_left, "a")
         self.screen.onkeypress(self.my_paddle2.move_right, "d")
-        # self.screen.onkeypress(self.random_ball, "space")
+        self.screen.onkeypress(self.random_ball, "space")
 
         print(self.pq)
 
