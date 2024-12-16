@@ -21,7 +21,7 @@ I have modified:
    4.4 store_winner(): Store winner's name into CSV file name "Air_Hockey.csv"
    4.5 run(): Add if-else condition, ending the game when whoever's score is 5
 
-I test this code, I have faced many bugs, first one that I have noticed that the performance of it decreased drastically, might be due to excessive heappushing, causing fps dropping overtime. Also, the ball calculate the next position it be when it hit something, for example, if the ball hits paddle, it will calculate whether it will collide with another paddle or not, if it collied, while the ball is travelling and you move away the paddle that need to be collided, the ball will still remember to original position of the paddle, not the current location, making its movement a bit off.
+I test this code, I have faced many bugs, first one that I have noticed that the ball calculate the next position it be when it hit something, for example, if the ball hits paddle, it will calculate whether it will collide with another paddle or not, if it collied, while the ball is travelling and you move away the paddle that need to be collided, the ball will still remember an original position of the paddle, not the current location, making its movement a bit off.
 
 For UML class diagram, the picture of it can be seen in UML_Class_Diagram.png.
 The purpose of each class are:
