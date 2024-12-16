@@ -32,3 +32,4 @@ The purpose of each class are:
 5. BouncingSimulator: Simulate ball bouncing event in real life, combined of object Ball and Paddle, checking which event occurs by Event, and track duration using Clock.
    
 Introduction Video: https://youtu.be/GZ_vHmNERJg
+I'd rate this project, based from provided google doc, an 85 out of 100.
