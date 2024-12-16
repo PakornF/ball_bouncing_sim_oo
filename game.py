@@ -28,8 +28,8 @@ class BouncingSimulator:
         print(self.canvas_width, self.canvas_height)
 
         ball_radius = 0.05 * self.canvas_width
-        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(10,20),
-                              random.uniform(10, 20), (255, 0, 255), 0)
+        self.ball = ball.Ball(ball_radius, 0, 0, random.uniform(10,15),
+                              random.uniform(10, 15), (255, 0, 255), 0)
         self.ball_list.append(self.ball)
 
         tom = turtle.Turtle()
@@ -149,8 +149,8 @@ class BouncingSimulator:
         """reset ball"""
         self.ball.x = 0
         self.ball.y = 0
-        self.ball.vx = random.uniform(10, 20)  # or your desired velocity
-        self.ball.vy = random.uniform(10, 20)  # or your desired velocity
+        self.ball.vx = random.uniform(10, 15)  # or your desired velocity
+        self.ball.vy = random.uniform(10, 15)  # or your desired velocity
         self.update_score_display()
 
     def __draw_border(self):
@@ -323,7 +323,7 @@ class BouncingSimulator:
         self.screen.onkeypress(self.my_paddle2.move_down_player2,"s")
         self.screen.onkeypress(self.my_paddle2.move_left, "a")
         self.screen.onkeypress(self.my_paddle2.move_right, "d")
-        self.screen.onkeypress(self.random_ball, "space")
+        # self.screen.onkeypress(self.random_ball, "space")
 
         print(self.pq)
 
