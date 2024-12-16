@@ -1,9 +1,9 @@
-'''clock'''
+"""clock"""
 import time
 import turtle
 
 class Clock:
-    '''clock representing'''
+    """clock representation"""
     def __init__(self, screen, position=(0, 50)):
         self.start_time = time.time()
         self.screen = screen
@@ -14,11 +14,11 @@ class Clock:
         self.display.goto(self.position)
 
     def get_elapsed_time(self):
-        '''get elapsed time'''
+        """get elapsed time"""
         return time.time() - self.start_time
 
     def display_time(self):
-        '''display time'''
+        """display time"""
         elapsed_time = self.get_elapsed_time()
         minutes = int(elapsed_time // 60)
         seconds = int(elapsed_time % 60)
@@ -27,5 +27,5 @@ class Clock:
                            align="center", font=("Arial", 18, "normal"))
 
     def reset(self):
-        '''reset'''
+        """reset"""
         self.start_time = time.time()
