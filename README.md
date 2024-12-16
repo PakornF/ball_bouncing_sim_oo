@@ -30,3 +30,5 @@ The purpose of each class are:
 3. Paddle: Object for simulation paddle in real life, with position x y, width and height, acting as a deflector of ball.
 4. Clock: Object for simulation clock or timer in real life, tracking duration of the game.
 5. BouncingSimulator: Simulate ball bouncing event in real life, combined of object Ball and Paddle, checking which event occurs by Event, and track duration using Clock.
+   
+Introduction Video: https://youtu.be/GZ_vHmNERJg
